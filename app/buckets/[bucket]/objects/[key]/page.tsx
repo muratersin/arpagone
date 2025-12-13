@@ -1,9 +1,9 @@
-import { getFileBuffer } from "@/services/s3";
-import { Card, Empty, Space } from "antd";
 import { UserOutlined, CalendarOutlined } from "@ant-design/icons";
+import { Card, Empty, Space } from "antd";
 
 import Email from "@/components/Email";
 import MailActions from "@/components/MailActions";
+import { getFileBuffer } from "@/services/s3";
 
 export default async function Objects({
   params,
@@ -84,7 +84,7 @@ export default async function Objects({
             <MailActions
               from={mail?.from?.text}
               subject={mail?.subject}
-              html={mail?.html}
+              html={mail?.html || ""}
             />
           </div>
         </div>

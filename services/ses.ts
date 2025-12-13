@@ -1,4 +1,5 @@
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+
 import sesConfig from "@/config/ses.config";
 
 const client = new SESv2Client(sesConfig);
@@ -20,7 +21,7 @@ export async function sendEmail({
 }: SendEmailParams): Promise<string | null> {
   try {
     const fromEmail = process.env.SES_FROM_EMAIL || "noreply@example.com";
-    console.log({ toEmail, subject, fromEmail, replyToEmail });
+
     const command = new SendEmailCommand({
       FromEmailAddress: fromEmail,
       Destination: {
@@ -52,7 +53,7 @@ export async function sendEmail({
     });
 
     const response = await client.send(command);
-    console.log("Email sent successfully:", response.MessageId);
+
     return response.MessageId || null;
   } catch (error) {
     console.error("Error sending email:", error);

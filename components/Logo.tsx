@@ -1,8 +1,10 @@
 "use client";
 
-import { Button } from "antd";
-import { MailOutlined } from "@ant-design/icons";
 import { useState } from "react";
+
+import { MailOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+
 import SendEmailForm from "./SendEmailForm";
 
 interface LogoProps {

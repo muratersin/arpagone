@@ -1,4 +1,4 @@
-import { SESv2ClientConfig } from "@aws-sdk/client-sesv2";
+import type { SESv2ClientConfig } from "@aws-sdk/client-sesv2";
 
 const sesConfig: SESv2ClientConfig = {
   region: process.env.AWS_REGION,

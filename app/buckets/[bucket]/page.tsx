@@ -1,7 +1,7 @@
-import { listFiles } from "@/services/s3";
 import React from "react";
 
 import BucketList from "@/components/BucketList";
+import { listFiles } from "@/services/s3";
 
 interface DataType {
   key: React.Key;

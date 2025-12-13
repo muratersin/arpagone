@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import { Button, Space, Tooltip } from "antd";
+
 import { DownloadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Space, Tooltip } from "antd";
+
 import SendEmailModal from "@/components/SendEmailModal";
 
 export default function MailActions({

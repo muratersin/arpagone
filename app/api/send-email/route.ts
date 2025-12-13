@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { sendEmail, SendEmailParams } from "@/services/ses";
 
 export async function POST(request: NextRequest) {
@@ -18,13 +19,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.log("API Request Body:", {
-      toEmail,
-      subject,
-      htmlBody,
-      textBody,
-      replyToEmail,
-    });
+
     const messageId = await sendEmail({
       toEmail,
       subject,

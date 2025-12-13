@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Form, Input, Button, Modal, message, Space, Divider } from "antd";
+
 import { SendOutlined, CloseOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Modal, message, Space, Divider } from "antd";
 
 interface SendEmailFormProps {
   toEmail?: string;

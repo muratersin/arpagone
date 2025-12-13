@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Space, Tooltip } from "antd";
+
 import { MailOutlined } from "@ant-design/icons";
+import { Button, Space, Tooltip } from "antd";
+
 import SendEmailForm from "./SendEmailForm";
 
 export default function SendEmailModal({

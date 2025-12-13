@@ -1,13 +1,13 @@
-import { ParsedMail, simpleParser } from "mailparser";
 import {
   S3Client,
   ListBucketsCommand,
   ListObjectsCommand,
   DeleteObjectCommand,
-  type Bucket,
-  _Object,
   GetObjectCommand,
+  type Bucket,
+  type _Object,
 } from "@aws-sdk/client-s3";
+import { ParsedMail, simpleParser } from "mailparser";
 
 import s3Config from "@/config/s3.config";
 
@@ -49,10 +49,16 @@ export async function getFile(bucket: string, key: string) {
 }
 
 async function streamToBuffer(stream: unknown): Promise<Buffer> {
-  if (!stream) return Buffer.from([]);
+  if (!stream) {
+    return Buffer.from([]);
+  }
 
-  if (stream instanceof Uint8Array) return Buffer.from(stream);
-  if (typeof stream === "string") return Buffer.from(stream);
+  if (stream instanceof Uint8Array) {
+    return Buffer.from(stream);
+  }
+  if (typeof stream === "string") {
+    return Buffer.from(stream);
+  }
 
   if (
     typeof (stream as unknown as { arrayBuffer?: unknown }).arrayBuffer ===
@@ -73,7 +79,9 @@ async function streamToBuffer(stream: unknown): Promise<Buffer> {
       );
     }
   } catch (err) {
-    if (Buffer.isBuffer(stream as unknown as Buffer)) return stream as Buffer;
+    if (Buffer.isBuffer(stream as unknown as Buffer)) {
+      return stream as Buffer;
+    }
     throw err;
   }
 
@@ -88,7 +96,9 @@ export async function getFileBuffer(
     const command = new GetObjectCommand({ Bucket: bucket, Key: key });
     const response = await client.send(command);
     const body = response.Body as unknown;
-    if (!body) return null;
+    if (!body) {
+      return null;
+    }
     const buf = await streamToBuffer(body);
 
     return simpleParser(buf);

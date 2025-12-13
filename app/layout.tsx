@@ -1,11 +1,12 @@
 import "./globals.css";
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { Content, Footer } from "antd/es/layout/layout";
-import { Layout, Menu } from "antd";
 import Link from "next/link";
+
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { Layout, Menu } from "antd";
+import { Content, Footer } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
+import type { Metadata } from "next";
 
 import Logo from "@/components/Logo";
 import { listBuckets } from "@/services/s3";
@@ -36,8 +37,9 @@ export default async function RootLayout({
 }>) {
   const bucketList = await listBuckets();
   const items = bucketList?.map((bucket) => ({
-    key: bucket.Name,
+    key: bucket.Name || "unknown",
     label: <Link href={`/buckets/${bucket.Name}`}>{bucket.Name}</Link>,
+    type: "item" as const,
   }));
 
   const fromEmail = process.env.SES_FROM_EMAIL || "noreply@example.com";

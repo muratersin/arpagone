@@ -1,6 +1,8 @@
-import { Spin } from "antd";
-import { deleteObject } from "@/services/s3";
 import { redirect } from "next/navigation";
+
+import { Spin } from "antd";
+
+import { deleteObject } from "@/services/s3";
 
 import "./delete.css";
 
