@@ -1,4 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Arpagone - AWS S3 Mail Viewer
+
+A professional web application for viewing and managing emails stored in AWS S3 buckets. Features include email browsing, viewing, and sending replies via Amazon SES.
+
+## Features
+
+- 📧 Browse emails stored in AWS S3 buckets
+- 👀 View email content with rich HTML rendering
+- 💌 Reply to emails via Amazon SES
+- 📥 Download emails as HTML files
+- 🖨️ Print email functionality
+- 📱 Responsive design with Ant Design UI
+- 🧪 Unit tests with Jest
+
+## Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- AWS Account with:
+  - S3 bucket containing email files
+  - IAM user with S3 and SES permissions
+  - SES verified sender email address
+
+## Environment Setup
+
+1. Copy `example.env` to `.env.local`:
+
+```bash
+cp example.env .env.local
+```
+
+2. Fill in your AWS credentials:
+
+```env
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_REGION=us-east-1
+SES_FROM_EMAIL=noreply@yourdomain.com
+```
 
 ## Getting Started
 
