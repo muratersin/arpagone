@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button, Popconfirm, PopconfirmProps, Table } from "antd";
 import { FolderOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
-import { redirect, RedirectType } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type DataType = {
   key: React.Key;
@@ -14,19 +14,20 @@ type DataType = {
   LastModified: string;
 };
 
-export default function BucketTableClient({
+export default function BucketList({
   files,
   bucket,
 }: {
   files: DataType[];
   bucket: string;
 }) {
+  const router = useRouter();
+
   const confirm: PopconfirmProps["onConfirm"] = (key) => {
-    redirect(
+    router.push(
       `/buckets/${encodeURIComponent(bucket)}/objects/${encodeURIComponent(
-        key as unknown as string
-      )}/delete`,
-      RedirectType.push
+        key as string
+      )}/delete`
     );
   };
 
