@@ -1,12 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Space, Tooltip, message } from "antd";
-import {
-  DownloadOutlined,
-  FileTextOutlined,
-  PrinterOutlined,
-} from "@ant-design/icons";
 
 const RawHtmlRenderer = ({ html }: { html: string }) => {
   return (
@@ -35,7 +29,7 @@ const RawHtmlRenderer = ({ html }: { html: string }) => {
 };
 
 export default function Email({ html }: { html: string }) {
-  const [showSource, setShowSource] = useState(false);
+  const [showSource] = useState(false);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button, Space, Tooltip } from "antd";
-import { MailOutlined, ReloadOutlined } from "@ant-design/icons";
+import { MailOutlined } from "@ant-design/icons";
 import SendEmailForm from "./SendEmailForm";
 
 export default function SendEmailModal({

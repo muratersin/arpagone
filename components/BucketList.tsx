@@ -7,8 +7,6 @@ import { FolderOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 
-const a = "";
-
 type DataType = {
   key: React.Key;
   Key: string;

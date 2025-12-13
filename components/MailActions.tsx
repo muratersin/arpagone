@@ -2,12 +2,7 @@
 
 import React from "react";
 import { Button, Space, Tooltip } from "antd";
-import {
-  MailOutlined,
-  ReloadOutlined,
-  DownloadOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import SendEmailModal from "@/components/SendEmailModal";
 
 export default function MailActions({

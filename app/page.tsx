@@ -40,7 +40,7 @@ export default async function Home() {
             stored in AWS S3.
           </p>
           <p style={{ fontSize: "12px" }}>
-            💡 Tip: Once you select a bucket, you'll be able to view and
+            💡 Tip: Once you select a bucket, you&apos;ll be able to view and
             interact with your emails.
           </p>
         </div>
