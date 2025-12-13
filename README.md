@@ -190,6 +190,44 @@ npm start
 npm run lint
 ```
 
+### Code Quality & Git Hooks
+
+This project uses **Husky** for git hooks and **Commitlint** for enforcing conventional commit messages:
+
+- **Pre-commit Hook**: Runs `npm run lint` before each commit. If linting fails, the commit is blocked.
+- **Commit Message**: Must follow [Conventional Commits](https://www.conventionalcommits.org/) format
+
+#### Commit Message Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+**Valid Types:**
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation
+- `style`: Code style (formatting, semicolons, etc.)
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `test`: Tests
+- `chore`: Build tools, dependencies
+- `ci`: CI/CD configuration
+- `revert`: Revert a commit
+
+**Examples:**
+
+```bash
+git commit -m "feat(email): add email export to PDF"
+git commit -m "fix(ui): resolve email rendering issue"
+git commit -m "docs: update installation guide"
+```
+
 ## 📁 Project Structure
 
 ```
