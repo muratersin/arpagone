@@ -34,9 +34,18 @@ export async function listFiles(params: {
   const { bucket } = params;
   const command = new ListObjectsCommand({
     Bucket: bucket,
+    MaxKeys: 10,
   });
   const response = await client.send(command);
-  return response.Contents ?? [];
+  const contents = response.Contents ?? [];
+
+  // Sort by LastModified descending (newest first)
+  contents.sort(
+    (a, b) =>
+      (b.LastModified?.getTime() || 0) - (a.LastModified?.getTime() || 0)
+  );
+
+  return contents;
 }
 
 export async function getFile(bucket: string, key: string) {
