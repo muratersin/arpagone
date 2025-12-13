@@ -7,6 +7,8 @@ import { FolderOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 
+const a = "";
+
 type DataType = {
   key: React.Key;
   Key: string;
@@ -26,7 +28,7 @@ export default function BucketList({
   const confirm: PopconfirmProps["onConfirm"] = (key) => {
     router.push(
       `/buckets/${encodeURIComponent(bucket)}/objects/${encodeURIComponent(
-        key as string
+        key as unknown as string
       )}/delete`
     );
   };
@@ -79,6 +81,7 @@ export default function BucketList({
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           gap: "12px",
           padding: "16px 20px",
           background: "#fff",
@@ -86,14 +89,16 @@ export default function BucketList({
           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
         }}
       >
-        <FolderOutlined style={{ fontSize: "24px", color: "#FF9900" }} />
-        <div>
-          <h1 style={{ margin: "0", fontSize: "20px", fontWeight: "600" }}>
-            {bucket}
-          </h1>
-          <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#999" }}>
-            {files.length} object{files.length !== 1 ? "s" : ""}
-          </p>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <FolderOutlined style={{ fontSize: "24px", color: "#FF9900" }} />
+          <div>
+            <h1 style={{ margin: "0", fontSize: "20px", fontWeight: "600" }}>
+              {bucket}
+            </h1>
+            <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#999" }}>
+              {files.length} object{files.length !== 1 ? "s" : ""}
+            </p>
+          </div>
         </div>
       </div>
       <Table<DataType>

@@ -40,6 +40,8 @@ export default async function RootLayout({
     label: <Link href={`/buckets/${bucket.Name}`}>{bucket.Name}</Link>,
   }));
 
+  const fromEmail = process.env.SES_FROM_EMAIL || "noreply@example.com";
+
   return (
     <html lang="en">
       <body
@@ -48,7 +50,7 @@ export default async function RootLayout({
         <AntdRegistry>
           <Layout hasSider className="h-screen">
             <Sider width={280} style={{ background: "#001529" }}>
-              <Logo />
+              <Logo fromEmail={fromEmail} />
               <Menu
                 theme="dark"
                 mode="inline"

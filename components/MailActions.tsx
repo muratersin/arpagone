@@ -8,6 +8,7 @@ import {
   DownloadOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import SendEmailModal from "@/components/SendEmailModal";
 
 export default function MailActions({
   from,
@@ -20,22 +21,6 @@ export default function MailActions({
   html?: string;
   onDelete?: () => void;
 }) {
-  function mailtoReply() {
-    const to = from || "";
-    const subj = subject ? `Re: ${subject}` : "";
-    window.location.href = `mailto:${encodeURIComponent(
-      to
-    )}?subject=${encodeURIComponent(subj)}`;
-  }
-
-  function mailtoForward() {
-    const subj = subject ? `Fwd: ${subject}` : "";
-    const body = html ? encodeURIComponent(html) : "";
-    window.location.href = `mailto:?subject=${encodeURIComponent(
-      subj
-    )}&body=${body}`;
-  }
-
   function downloadHtml() {
     const blob = new Blob([html || ""], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -51,20 +36,8 @@ export default function MailActions({
   return (
     <div style={{ display: "flex", justifyContent: "flex-end" }}>
       <Space>
-        <Tooltip title="Reply">
-          <Button onClick={mailtoReply} icon={<MailOutlined />} size="small">
-            Reply
-          </Button>
-        </Tooltip>
-        <Tooltip title="Forward">
-          <Button
-            onClick={mailtoForward}
-            icon={<ReloadOutlined />}
-            size="small"
-          >
-            Forward
-          </Button>
-        </Tooltip>
+        <SendEmailModal fromEmail={from} subject={subject} />
+
         <Tooltip title="Download HTML">
           <Button
             onClick={downloadHtml}

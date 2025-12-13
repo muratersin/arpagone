@@ -4,7 +4,6 @@ import { UserOutlined, CalendarOutlined } from "@ant-design/icons";
 
 import Email from "@/components/Email";
 import MailActions from "@/components/MailActions";
-import SendEmailModal from "@/components/SendEmailModal";
 
 export default async function Objects({
   params,
@@ -82,12 +81,6 @@ export default async function Objects({
           </div>
 
           <div style={{ marginLeft: 12, display: "flex", gap: 8 }}>
-            <SendEmailModal
-              fromEmail={mail?.from?.text}
-              subject={mail?.subject}
-            />
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-ignore */}
             <MailActions
               from={mail?.from?.text}
               subject={mail?.subject}

@@ -20,7 +20,7 @@ export async function sendEmail({
 }: SendEmailParams): Promise<string | null> {
   try {
     const fromEmail = process.env.SES_FROM_EMAIL || "noreply@example.com";
-
+    console.log({ toEmail, subject, fromEmail, replyToEmail });
     const command = new SendEmailCommand({
       FromEmailAddress: fromEmail,
       Destination: {

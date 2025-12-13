@@ -18,7 +18,13 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
+    console.log("API Request Body:", {
+      toEmail,
+      subject,
+      htmlBody,
+      textBody,
+      replyToEmail,
+    });
     const messageId = await sendEmail({
       toEmail,
       subject,

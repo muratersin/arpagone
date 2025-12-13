@@ -5,24 +5,35 @@ import { Form, Input, Button, Modal, message, Space, Divider } from "antd";
 import { SendOutlined, CloseOutlined } from "@ant-design/icons";
 
 interface SendEmailFormProps {
-  toEmail: string;
-  subject: string;
+  toEmail?: string;
+  subject?: string;
   onClose: () => void;
   isReply?: boolean;
 }
 
 export default function SendEmailForm({
-  toEmail,
-  subject,
+  toEmail = "",
+  subject = "",
   onClose,
   isReply = false,
 }: SendEmailFormProps) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (values: { message: string }) => {
+  const handleSubmit = async (values: {
+    message: string;
+    toEmail?: string;
+    subject?: string;
+  }) => {
     try {
       setLoading(true);
+
+      const finalToEmail = isReply ? toEmail : values.toEmail;
+      const finalSubject = isReply
+        ? subject.startsWith("Re:")
+          ? subject
+          : `Re: ${subject}`
+        : values.subject;
 
       const response = await fetch("/api/send-email", {
         method: "POST",
@@ -30,12 +41,8 @@ export default function SendEmailForm({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          toEmail,
-          subject: isReply
-            ? subject.startsWith("Re:")
-              ? subject
-              : `Re: ${subject}`
-            : subject,
+          toEmail: finalToEmail,
+          subject: finalSubject,
           htmlBody: values.message,
           textBody: values.message,
         }),
@@ -67,23 +74,49 @@ export default function SendEmailForm({
       footer={null}
       width={600}
     >
-      <div style={{ marginBottom: 16 }}>
-        <div>
-          <strong>To:</strong> {toEmail}
-        </div>
-        <div>
-          <strong>Subject:</strong>{" "}
-          {isReply
-            ? subject.startsWith("Re:")
-              ? subject
-              : `Re: ${subject}`
-            : subject}
-        </div>
-      </div>
-
-      <Divider />
-
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        {isReply ? (
+          <>
+            <div style={{ marginBottom: 16 }}>
+              <div>
+                <strong>To:</strong> {toEmail}
+              </div>
+              <div>
+                <strong>Subject:</strong>{" "}
+                {subject.startsWith("Re:") ? subject : `Re: ${subject}`}
+              </div>
+            </div>
+            <Divider />
+          </>
+        ) : (
+          <>
+            <Form.Item
+              name="toEmail"
+              label="To"
+              rules={[
+                { required: true, message: "Please enter recipient email" },
+                {
+                  type: "email",
+                  message: "Please enter a valid email address",
+                },
+              ]}
+              initialValue={toEmail}
+            >
+              <Input placeholder="recipient@example.com" />
+            </Form.Item>
+
+            <Form.Item
+              name="subject"
+              label="Subject"
+              rules={[{ required: true, message: "Please enter subject" }]}
+              initialValue={subject}
+            >
+              <Input placeholder="Email subject" />
+            </Form.Item>
+
+            <Divider />
+          </>
+        )}
         <Form.Item
           name="message"
           label="Message"
