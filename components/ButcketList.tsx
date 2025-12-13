@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Button, Popconfirm, PopconfirmProps, Table } from "antd";
+import { FolderOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { redirect, RedirectType } from "next/navigation";
 
@@ -52,20 +53,55 @@ export default function BucketTableClient({
       title: "Action",
       dataIndex: "Key",
       key: "Key",
+      width: 100,
+      align: "center",
       render: (key) => (
         <Popconfirm
-          title="Delete the task"
-          description="Are you sure to delete this?"
+          title="Delete the email"
+          description="Are you sure to delete this email? This action cannot be undone."
           onConfirm={() => confirm(key)}
           placement="left"
           okText="Yes"
           cancelText="No"
         >
-          <Button danger>Delete</Button>
+          <Button danger size="small" icon={<DeleteOutlined />} type="text">
+            Delete
+          </Button>
         </Popconfirm>
       ),
     },
   ];
 
-  return <Table<DataType> columns={columns} dataSource={files} rowKey="key" />;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          padding: "16px 20px",
+          background: "#fff",
+          borderRadius: "6px",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
+        }}
+      >
+        <FolderOutlined style={{ fontSize: "24px", color: "#FF9900" }} />
+        <div>
+          <h1 style={{ margin: "0", fontSize: "20px", fontWeight: "600" }}>
+            {bucket}
+          </h1>
+          <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#999" }}>
+            {files.length} object{files.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+      </div>
+      <Table<DataType>
+        columns={columns}
+        dataSource={files}
+        rowKey="key"
+        pagination={{ pageSize: 20 }}
+        style={{ background: "#fff", borderRadius: "6px" }}
+      />
+    </div>
+  );
 }

@@ -7,7 +7,6 @@ import { Layout, Menu } from "antd";
 import Link from "next/link";
 import Sider from "antd/es/layout/Sider";
 
-import Breadcrumb from "@/components/Breadcrumb";
 import Logo from "@/components/Logo";
 import { listBuckets } from "@/services/s3";
 
@@ -58,7 +57,6 @@ export default async function RootLayout({
               />
             </Sider>
             <Layout style={{ display: "flex", flexDirection: "column" }}>
-              <Breadcrumb />
               <Content
                 style={{
                   margin: "24px 16px 0",

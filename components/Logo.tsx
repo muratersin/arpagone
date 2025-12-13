@@ -22,7 +22,7 @@ export default function Logo() {
           r="95"
           fill="#F3F4F6"
           stroke="#333333"
-          stroke-width="10"
+          strokeWidth="10"
         />
 
         <g transform="rotate(15 100 100)">
@@ -32,7 +32,7 @@ export default function Logo() {
             r="65"
             fill="#ECB390"
             stroke="#333333"
-            stroke-width="6"
+            strokeWidth="6"
           />
           <line
             x1="47"
@@ -40,7 +40,7 @@ export default function Logo() {
             x2="30"
             y2="100"
             stroke="#333333"
-            stroke-width="8"
+            strokeWidth="8"
           />
           <line
             x1="100"
@@ -48,7 +48,7 @@ export default function Logo() {
             x2="100"
             y2="30"
             stroke="#333333"
-            stroke-width="8"
+            strokeWidth="8"
           />
           <line
             x1="153"
@@ -56,7 +56,7 @@ export default function Logo() {
             x2="170"
             y2="100"
             stroke="#333333"
-            stroke-width="8"
+            strokeWidth="8"
           />
           <line
             x1="100"
@@ -64,7 +64,7 @@ export default function Logo() {
             x2="100"
             y2="170"
             stroke="#333333"
-            stroke-width="8"
+            strokeWidth="8"
           />
         </g>
 
@@ -74,15 +74,15 @@ export default function Logo() {
           r="35"
           fill="#FFD700"
           stroke="#CC9C00"
-          stroke-width="4"
+          strokeWidth="4"
         />
         <text
           x="100"
           y="108"
-          text-anchor="middle"
-          font-size="30"
+          textAnchor="middle"
+          fontSize="30"
           fill="#333333"
-          font-family="Arial, sans-serif"
+          fontFamily="Arial, sans-serif"
         >
           $
         </text>

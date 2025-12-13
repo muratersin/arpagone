@@ -10,7 +10,7 @@ interface DataType {
   LastModified: string;
 }
 
-export default async function Butcket({
+export default async function Bucket({
   params,
 }: {
   params: Promise<{ bucket: string }>;
