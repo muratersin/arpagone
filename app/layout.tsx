@@ -8,6 +8,7 @@ import Link from "next/link";
 import Sider from "antd/es/layout/Sider";
 
 import Breadcrumb from "@/components/Breadcrumb";
+import Logo from "@/components/Logo";
 import { listBuckets } from "@/services/s3";
 
 const geistSans = Geist({
@@ -21,8 +22,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Arpagon",
-  description: "AWS S3 Mail Viewer for Arpagones",
+  title: "Arpagone - AWS S3 Mail Viewer",
+  description:
+    "A professional tool for viewing and managing emails stored in AWS S3 buckets",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default async function RootLayout({
@@ -43,17 +48,38 @@ export default async function RootLayout({
       >
         <AntdRegistry>
           <Layout hasSider className="h-screen">
-            <Sider>
-              <div className="demo-logo-vertical" />
-              <Menu theme="dark" mode="inline" items={items} />
+            <Sider width={280} style={{ background: "#001529" }}>
+              <Logo />
+              <Menu
+                theme="dark"
+                mode="inline"
+                items={items}
+                style={{ border: "none" }}
+              />
             </Sider>
-            <Layout>
+            <Layout style={{ display: "flex", flexDirection: "column" }}>
               <Breadcrumb />
-              <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+              <Content
+                style={{
+                  margin: "24px 16px 0",
+                  overflow: "auto",
+                  flex: 1,
+                  padding: "0 8px",
+                }}
+              >
                 {children}
               </Content>
-              <Footer style={{ textAlign: "center" }}>
-                Arpagon ©{new Date().getFullYear()} Created by Harpagon
+              <Footer
+                style={{
+                  textAlign: "center",
+                  background: "#f5f5f5",
+                  borderTop: "1px solid #d9d9d9",
+                  padding: "16px",
+                }}
+              >
+                <div style={{ fontSize: "13px", color: "#666" }}>
+                  Arpagone ©{new Date().getFullYear()} · AWS S3 Mail Viewer
+                </div>
               </Footer>
             </Layout>
           </Layout>
