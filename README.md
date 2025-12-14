@@ -19,14 +19,14 @@ It's a professional email management solution that replaces expensive enterprise
 
 ### Why Choose Arpagone?
 
-| Feature             | AWS WorkMail | Arpagone |
-| ------------------- | ------------ | -------- |
-| **Monthly Cost**    | $4-6         | $0       |
-| **Setup Time**      | 30 min       | 5 min    |
-| **Email Viewing**   | ✅           | ✅       |
-| **Email Sending**   | ✅           | ✅       |
-| **Download Emails** | Limited      | ✅       |
-| **Open Source**     | ❌           | ✅       |
+| Feature             | AWS WorkMail | Arpagone   |
+| ------------------- | ------------ | ---------- |
+| **Monthly Cost**    | $4-6         | $0.10-0.50 |
+| **Setup Time**      | 30 min       | 5 min      |
+| **Email Viewing**   | ✅           | ✅         |
+| **Email Sending**   | ✅           | ✅         |
+| **Download Emails** | Limited      | ✅         |
+| **Open Source**     | ❌           | ✅         |
 
 ## ✨ Features
 
@@ -198,7 +198,6 @@ arpagone/
 
 - Never commit `.env.local` to git
 - Use IAM least privilege principle
-- Exit SES sandbox mode for production
 - Emails assumed from trusted sources
 
 ## 📊 API Endpoints
