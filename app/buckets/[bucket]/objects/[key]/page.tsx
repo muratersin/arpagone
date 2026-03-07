@@ -5,11 +5,18 @@ import Email from "@/components/Email";
 import MailActions from "@/components/MailActions";
 import { getFileBuffer } from "@/services/s3";
 
+function formatDate(date: string | Date): string {
+  if (typeof date === "string") {
+    return date;
+  }
+  return new Date(date).toLocaleString();
+}
+
 export default async function Objects({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ key: string; bucket: string }>;
-}) {
+}>) {
   const { key, bucket } = await params;
   const mail = await getFileBuffer(bucket, key);
   const to = Array.isArray(mail?.to)
@@ -68,12 +75,7 @@ export default async function Objects({
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <CalendarOutlined style={{ color: "#999" }} />
                   <span style={{ color: "#666" }}>
-                    {mail?.date
-                      ? typeof mail.date === "string"
-                        ? mail.date
-                        : // mail.date may be a Date object
-                          new Date(mail.date).toLocaleString()
-                      : ""}
+                    {mail?.date ? formatDate(mail.date) : ""}
                   </span>
                 </span>
               </Space>

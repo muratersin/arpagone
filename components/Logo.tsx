@@ -11,7 +11,9 @@ interface LogoProps {
   fromEmail?: string;
 }
 
-export default function Logo({ fromEmail = "noreply@example.com" }: LogoProps) {
+export default function Logo({
+  fromEmail = "noreply@example.com",
+}: Readonly<LogoProps>) {
   const [showSendForm, setShowSendForm] = useState(false);
 
   return (

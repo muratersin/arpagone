@@ -1,27 +1,13 @@
 import React from "react";
 
-import BucketList from "@/components/BucketList";
-import { listFiles } from "@/services/s3";
-
-interface DataType {
-  key: React.Key;
-  Key: string;
-  ETag: string;
-  LastModified: string;
-}
+import EmailInbox from "@/components/EmailInbox";
 
 export default async function Bucket({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ bucket: string }>;
-}) {
+}>) {
   const { bucket } = await params;
-  const files = (await listFiles({ bucket })).map((file, index) => ({
-    key: index,
-    Key: file.Key!,
-    ETag: file.ETag!,
-    LastModified: file.LastModified?.toISOString(),
-  })) as DataType[];
 
-  return <BucketList files={files} bucket={bucket} />;
+  return <EmailInbox bucket={bucket} />;
 }

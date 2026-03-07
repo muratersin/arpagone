@@ -20,17 +20,17 @@ type DataType = {
 export default function BucketList({
   files,
   bucket,
-}: {
+}: Readonly<{
   files: DataType[];
   bucket: string;
-}) {
+}>) {
   const router = useRouter();
 
   const confirm: PopconfirmProps["onConfirm"] = (key) => {
     router.push(
       `/buckets/${encodeURIComponent(bucket)}/objects/${encodeURIComponent(
-        key as unknown as string
-      )}/delete`
+        key as unknown as string,
+      )}/delete`,
     );
   };
 
@@ -41,7 +41,7 @@ export default function BucketList({
       key: "Key",
       render: (text: string, record) => {
         const href = `/buckets/${encodeURIComponent(
-          bucket
+          bucket,
         )}/objects/${encodeURIComponent(record.Key)}`;
         return <Link href={href}>{text}</Link>;
       },
@@ -97,7 +97,7 @@ export default function BucketList({
               {bucket}
             </h1>
             <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#999" }}>
-              {files.length} object{files.length !== 1 ? "s" : ""}
+              {files.length} object{files.length === 1 ? "" : "s"}
             </p>
           </div>
         </div>

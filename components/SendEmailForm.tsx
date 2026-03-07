@@ -17,7 +17,7 @@ export default function SendEmailForm({
   subject = "",
   onClose,
   isReply = false,
-}: SendEmailFormProps) {
+}: Readonly<SendEmailFormProps>) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
@@ -30,11 +30,10 @@ export default function SendEmailForm({
       setLoading(true);
 
       const finalToEmail = isReply ? toEmail : values.toEmail;
-      const finalSubject = isReply
-        ? subject.startsWith("Re:")
-          ? subject
-          : `Re: ${subject}`
-        : values.subject;
+      const replySubject = subject.startsWith("Re:")
+        ? subject
+        : `Re: ${subject}`;
+      const finalSubject = isReply ? replySubject : values.subject;
 
       const response = await fetch("/api/send-email", {
         method: "POST",
@@ -60,7 +59,7 @@ export default function SendEmailForm({
     } catch (error) {
       console.error("Error:", error);
       message.error(
-        error instanceof Error ? error.message : "Failed to send email"
+        error instanceof Error ? error.message : "Failed to send email",
       );
     } finally {
       setLoading(false);
