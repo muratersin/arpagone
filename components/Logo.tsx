@@ -3,18 +3,21 @@
 import { useState } from "react";
 
 import { MailOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Select } from "antd";
 
 import SendEmailForm from "./SendEmailForm";
 
 interface LogoProps {
-  fromEmail?: string;
+  fromEmails?: string[];
 }
 
 export default function Logo({
-  fromEmail = "noreply@example.com",
+  fromEmails = ["noreply@example.com"],
 }: Readonly<LogoProps>) {
   const [showSendForm, setShowSendForm] = useState(false);
+  const [selectedFromEmail, setSelectedFromEmail] = useState(
+    fromEmails[0] || "noreply@example.com",
+  );
 
   return (
     <div style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
@@ -127,13 +130,19 @@ export default function Logo({
           style={{
             fontSize: "10px",
             color: "rgba(255, 255, 255, 0.65)",
-            wordBreak: "break-all",
-            fontFamily: "monospace",
             marginBottom: "8px",
+            letterSpacing: "0.2px",
           }}
         >
-          📧 {fromEmail}
+          Gönderici adresi
         </div>
+        <Select
+          size="small"
+          value={selectedFromEmail}
+          onChange={setSelectedFromEmail}
+          options={fromEmails.map((email) => ({ label: email, value: email }))}
+          style={{ width: "100%" }}
+        />
       </div>
       <div style={{ padding: "0 12px 12px 12px" }}>
         <Button
@@ -148,7 +157,11 @@ export default function Logo({
       </div>
 
       {showSendForm && (
-        <SendEmailForm onClose={() => setShowSendForm(false)} isReply={false} />
+        <SendEmailForm
+          onClose={() => setShowSendForm(false)}
+          isReply={false}
+          fromEmail={selectedFromEmail}
+        />
       )}
     </div>
   );

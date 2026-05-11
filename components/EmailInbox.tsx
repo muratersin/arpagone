@@ -5,7 +5,18 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { MailOutlined, ReloadOutlined, SyncOutlined } from "@ant-design/icons";
-import { Badge, Button, List, Space, Tag, Tooltip, Typography } from "antd";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  Modal,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+  Typography,
+  message,
+} from "antd";
 
 const { Text } = Typography;
 
@@ -27,8 +38,10 @@ export default function EmailInbox({ bucket }: Readonly<{ bucket: string }>) {
   const [emails, setEmails] = useState<EmailItem[]>([]);
   const [syncing, setSyncing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [lastSync, setLastSync] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState(POLL_INTERVAL_MS / 1000);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -41,6 +54,16 @@ export default function EmailInbox({ bucket }: Readonly<{ bucket: string }>) {
       if (res.ok) {
         const data: EmailItem[] = await res.json();
         setEmails(data);
+        setSelectedIds((prev) => {
+          const validIds = new Set(data.map((item) => item.id));
+          const next = new Set<string>();
+          prev.forEach((id) => {
+            if (validIds.has(id)) {
+              next.add(id);
+            }
+          });
+          return next;
+        });
       }
     } finally {
       setLoading(false);
@@ -100,6 +123,109 @@ export default function EmailInbox({ bucket }: Readonly<{ bucket: string }>) {
     setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, read: 1 } : e)));
   };
 
+  const toggleSelection = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+      return next;
+    });
+  };
+
+  const selectedCount = selectedIds.size;
+  const allSelected = emails.length > 0 && selectedCount === emails.length;
+
+  const handleToggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+      return;
+    }
+    setSelectedIds(new Set(emails.map((email) => email.id)));
+  };
+
+  const removeIdsFromState = (ids: string[]) => {
+    const idSet = new Set(ids);
+    setEmails((prev) => prev.filter((email) => !idSet.has(email.id)));
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      ids.forEach((id) => next.delete(id));
+      return next;
+    });
+  };
+
+  const deleteByIds = useCallback(async (ids: string[]) => {
+    if (!ids.length) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/emails", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+
+      const data = (await res.json()) as {
+        deleted?: string[];
+        failed?: Array<{ id: string; error?: string }>;
+      };
+
+      if (!res.ok) {
+        message.error("Silme işlemi başarısız oldu.");
+        return;
+      }
+
+      const deletedIds = data.deleted ?? [];
+      const failed = data.failed ?? [];
+
+      removeIdsFromState(deletedIds);
+
+      if (deletedIds.length && !failed.length) {
+        message.success(`${deletedIds.length} e-posta silindi.`);
+        return;
+      }
+
+      if (deletedIds.length && failed.length) {
+        message.warning(
+          `${deletedIds.length} e-posta silindi, ${failed.length} e-posta silinemedi.`,
+        );
+        return;
+      }
+
+      message.error("Seçilen e-postalar silinemedi.");
+    } catch {
+      message.error("Silme sırasında beklenmeyen bir hata oluştu.");
+    } finally {
+      setDeleting(false);
+    }
+  }, []);
+
+  const confirmDelete = (ids: string[]) => {
+    if (!ids.length) {
+      return;
+    }
+
+    const modal = Modal.confirm({
+      title: "E-postaları sil",
+      content: `${ids.length} e-postayı kalıcı olarak silmek istediğinizden emin misiniz?`,
+      okText: "Sil",
+      okButtonProps: { danger: true },
+      cancelText: "Vazgeç",
+      onOk: async () => {
+        modal.update({ okButtonProps: { danger: true, loading: true } });
+        try {
+          await deleteByIds(ids);
+        } finally {
+          modal.update({ okButtonProps: { danger: true, loading: false } });
+        }
+      },
+    });
+  };
+
   const unreadCount = emails.filter((e) => e.read === 0).length;
 
   return (
@@ -128,6 +254,9 @@ export default function EmailInbox({ bucket }: Readonly<{ bucket: string }>) {
           {unreadCount > 0 && (
             <Badge count={unreadCount} style={{ backgroundColor: "#FF9900" }} />
           )}
+          {selectedCount > 0 && (
+            <Tag color="processing">{selectedCount} seçili</Tag>
+          )}
         </Space>
 
         <Space>
@@ -139,68 +268,75 @@ export default function EmailInbox({ bucket }: Readonly<{ bucket: string }>) {
               size="small"
               icon={syncing ? <SyncOutlined spin /> : <ReloadOutlined />}
               onClick={syncEmails}
-              disabled={syncing}
+              disabled={syncing || deleting}
             >
               {syncing ? "Senkronize ediliyor…" : "Yenile"}
             </Button>
           </Tooltip>
+          <Button
+            size="small"
+            onClick={handleToggleSelectAll}
+            disabled={!emails.length || deleting}
+          >
+            {allSelected ? "Seçimi temizle" : "Tümünü seç"}
+          </Button>
+          <Button
+            size="small"
+            danger
+            disabled={!selectedCount || deleting}
+            onClick={() => confirmDelete(Array.from(selectedIds))}
+          >
+            Seçileni sil
+          </Button>
         </Space>
       </div>
 
       {/* Liste */}
-      <List
+      <Table<EmailItem>
         loading={loading}
         dataSource={emails}
+        rowKey="id"
+        showHeader={false}
+        pagination={false}
         locale={{ emptyText: "Henüz e-posta yok" }}
-        renderItem={(email) => {
-          const href = `/buckets/${encodeURIComponent(
-            bucket,
-          )}/objects/${encodeURIComponent(email.s3_key)}`;
+        onRow={(email) => ({
+          style: {
+            background: email.read === 0 ? "#fffbf0" : "transparent",
+            borderLeft:
+              email.read === 0 ? "3px solid #FF9900" : "3px solid transparent",
+            transition: "background 0.2s",
+          },
+        })}
+        columns={[
+          {
+            key: "content",
+            render: (_, email) => {
+              const href = `/buckets/${encodeURIComponent(
+                bucket,
+              )}/objects/${encodeURIComponent(email.s3_key)}`;
 
-          return (
-            <List.Item
-              key={email.id}
-              style={{
-                padding: "12px 20px",
-                background: email.read === 0 ? "#fffbf0" : "transparent",
-                borderLeft:
-                  email.read === 0
-                    ? "3px solid #FF9900"
-                    : "3px solid transparent",
-                transition: "background 0.2s",
-              }}
-              actions={[
-                email.read === 0 ? (
-                  <Button
-                    key="read"
-                    size="small"
-                    type="text"
-                    onClick={() => handleMarkRead(email.id)}
-                  >
-                    Okundu işaretle
-                  </Button>
-                ) : (
-                  <Tag key="read-tag" color="default" style={{ fontSize: 11 }}>
-                    Okundu
-                  </Tag>
-                ),
-              ]}
-            >
-              <List.Item.Meta
-                title={
-                  <Link
-                    href={href}
-                    style={{ color: email.read === 0 ? "#000" : "#666" }}
-                  >
-                    <strong
-                      style={{ fontWeight: email.read === 0 ? 700 : 400 }}
+              return (
+                <div style={{ padding: "12px 0" }}>
+                  <Space size={10}>
+                    <Checkbox
+                      checked={selectedIds.has(email.id)}
+                      onChange={(e) =>
+                        toggleSelection(email.id, e.target.checked)
+                      }
+                      disabled={deleting}
+                    />
+                    <Link
+                      href={href}
+                      style={{ color: email.read === 0 ? "#000" : "#666" }}
                     >
-                      {email.subject || "(Konu yok)"}
-                    </strong>
-                  </Link>
-                }
-                description={
-                  <Space size={16} wrap>
+                      <strong
+                        style={{ fontWeight: email.read === 0 ? 700 : 400 }}
+                      >
+                        {email.subject || "(Konu yok)"}
+                      </strong>
+                    </Link>
+                  </Space>
+                  <Space size={16} wrap style={{ marginTop: 6 }}>
                     <Text type="secondary" style={{ fontSize: 12 }}>
                       <strong>Gönderen:</strong>{" "}
                       {email.from_addr || "Bilinmiyor"}
@@ -214,11 +350,43 @@ export default function EmailInbox({ bucket }: Readonly<{ bucket: string }>) {
                       </Text>
                     )}
                   </Space>
-                }
-              />
-            </List.Item>
-          );
-        }}
+                </div>
+              );
+            },
+          },
+          {
+            key: "actions",
+            width: 210,
+            align: "right",
+            render: (_, email) => (
+              <Space size={4}>
+                <Button
+                  size="small"
+                  type="text"
+                  danger
+                  disabled={deleting}
+                  onClick={() => confirmDelete([email.id])}
+                >
+                  Sil
+                </Button>
+                {email.read === 0 ? (
+                  <Button
+                    size="small"
+                    type="text"
+                    disabled={deleting}
+                    onClick={() => handleMarkRead(email.id)}
+                  >
+                    Okundu işaretle
+                  </Button>
+                ) : (
+                  <Tag color="default" style={{ fontSize: 11 }}>
+                    Okundu
+                  </Tag>
+                )}
+              </Space>
+            ),
+          },
+        ]}
       />
 
       {lastSync && (

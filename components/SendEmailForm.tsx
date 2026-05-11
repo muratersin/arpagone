@@ -8,6 +8,7 @@ import { Form, Input, Button, Modal, message, Space, Divider } from "antd";
 interface SendEmailFormProps {
   toEmail?: string;
   subject?: string;
+  fromEmail?: string;
   onClose: () => void;
   isReply?: boolean;
 }
@@ -15,6 +16,7 @@ interface SendEmailFormProps {
 export default function SendEmailForm({
   toEmail = "",
   subject = "",
+  fromEmail = "noreply@example.com",
   onClose,
   isReply = false,
 }: Readonly<SendEmailFormProps>) {
@@ -43,6 +45,7 @@ export default function SendEmailForm({
         body: JSON.stringify({
           toEmail: finalToEmail,
           subject: finalSubject,
+          fromEmail,
           htmlBody: values.message,
           textBody: values.message,
         }),
@@ -90,6 +93,10 @@ export default function SendEmailForm({
           </>
         ) : (
           <>
+            <Form.Item label="From">
+              <Input value={fromEmail} readOnly />
+            </Form.Item>
+
             <Form.Item
               name="toEmail"
               label="To"

@@ -106,7 +106,7 @@ AWS_SECRET_ACCESS_KEY=your_secret_key
 AWS_REGION=us-east-1
 
 # AWS SES (for sending emails)
-SES_FROM_EMAIL=verified@yourdomain.com
+SES_FROM_EMAIL=verified@yourdomain.com,sales@yourdomain.com,support@yourdomain.com
 ```
 
 ### 5. Run Development Server

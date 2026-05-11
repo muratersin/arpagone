@@ -8,21 +8,23 @@ export async function POST(request: NextRequest) {
     const {
       toEmail,
       subject,
+      fromEmail,
       htmlBody,
       textBody,
       replyToEmail,
-    }: SendEmailParams = body;
+    }: SendEmailParams & { fromEmail?: string } = body;
 
     if (!toEmail || !subject || !htmlBody) {
       return NextResponse.json(
         { error: "Missing required fields: toEmail, subject, htmlBody" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const messageId = await sendEmail({
       toEmail,
       subject,
+      fromEmail,
       htmlBody,
       textBody,
       replyToEmail,
@@ -35,7 +37,7 @@ export async function POST(request: NextRequest) {
       {
         error: error instanceof Error ? error.message : "Failed to send email",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

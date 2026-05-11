@@ -1,5 +1,9 @@
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
+import {
+  getDefaultSesFromEmail,
+  isAllowedSesFromEmail,
+} from "@/lib/ses-from-email";
 import sesConfig from "@/config/ses.config";
 
 const client = new SESv2Client(sesConfig);
@@ -7,6 +11,7 @@ const client = new SESv2Client(sesConfig);
 export interface SendEmailParams {
   toEmail: string;
   subject: string;
+  fromEmail?: string;
   htmlBody: string;
   textBody?: string;
   replyToEmail?: string;
@@ -15,15 +20,22 @@ export interface SendEmailParams {
 export async function sendEmail({
   toEmail,
   subject,
+  fromEmail,
   htmlBody,
   textBody,
   replyToEmail,
 }: SendEmailParams): Promise<string | null> {
   try {
-    const fromEmail = process.env.SES_FROM_EMAIL || "noreply@example.com";
+    const finalFromEmail = fromEmail?.trim() || getDefaultSesFromEmail();
+
+    if (!isAllowedSesFromEmail(finalFromEmail)) {
+      throw new Error(
+        "Invalid fromEmail. It must be one of SES_FROM_EMAIL values.",
+      );
+    }
 
     const command = new SendEmailCommand({
-      FromEmailAddress: fromEmail,
+      FromEmailAddress: finalFromEmail,
       Destination: {
         ToAddresses: [toEmail],
       },

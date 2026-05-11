@@ -9,6 +9,7 @@ import Sider from "antd/es/layout/Sider";
 import type { Metadata } from "next";
 
 import Logo from "@/components/Logo";
+import { getAllowedSesFromEmails } from "@/lib/ses-from-email";
 import { listBuckets } from "@/services/s3";
 
 const geistSans = Geist({
@@ -42,7 +43,7 @@ export default async function RootLayout({
     type: "item" as const,
   }));
 
-  const fromEmail = process.env.SES_FROM_EMAIL || "noreply@example.com";
+  const fromEmails = getAllowedSesFromEmails();
 
   return (
     <html lang="en">
@@ -52,7 +53,7 @@ export default async function RootLayout({
         <AntdRegistry>
           <Layout hasSider className="h-screen">
             <Sider width={280} style={{ background: "#001529" }}>
-              <Logo fromEmail={fromEmail} />
+              <Logo fromEmails={fromEmails} />
               <Menu
                 theme="dark"
                 mode="inline"
